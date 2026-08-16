@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weborbit Forums</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --header-bg: #ffffff;
+        }
+
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+            --header-bg: #181818;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .header-left-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* IKON SEARCH DI HEADER SEBELUM TEKS WEBIT */
+        .header-search-icon {
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text-color);
+            background: none;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+        .header-search-icon:hover {
+            color: #007bff;
+        }
+
+        .logo-area {
+            font-weight: bold;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .logo-web {
+            color: var(--text-color);
+        }
+
+        .logo-orbit {
+            color: #007bff;
+        }
+
+        /* Badge Role Styling */
+        .badge-role {
+            padding: 3px 8px;
+            font-size: 11px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .role-admin { background-color: #ff4757; color: white; }
+        .role-moderator { background-color: #2ed573; color: white; }
+        .role-forum-legend { background-color: #ffa502; color: white; }
+        .role-staff-member { background-color: #3742fa; color: white; }
+        .role-discord-staff { background-color: #70a1ff; color: white; }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .user-profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f1f2f6;
+            padding: 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+
+        body.dark-mode .user-profile-badge {
+            background: #333333;
+        }
+
+        .user-profile-badge img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .nav-right a, .nav-right span {
+            text-decoration: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .settings-icon {
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* XENFORO SEARCH DROPDOWN MENU */
+        #searchDropdownMenu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 0;
+            width: 320px;
+            background: #1c1c1c;
+            color: #ffffff;
+            border: 1px solid #333333;
+            border-radius: 6px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            z-index: 1000;
+            padding: 15px;
+            box-sizing: border-box;
+            font-size: 13px;
+        }
+
+        #searchDropdownMenu.show {
+            display: block;
+        }
+
+        .search-drop-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 6px;
+        }
+
+        .search-drop-group {
+            margin-bottom: 12px;
+        }
+
+        .search-drop-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        .search-drop-group input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            background: #121212;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        .search-drop-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #ccc;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .search-drop-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-drop-actions button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-search-main {
+            background-color: #2f3640;
+            color: white;
+            border: 1px solid #555 !important;
+        }
+
+        .btn-search-adv {
+            background-color: transparent;
+            color: #aaa;
+            border: 1px solid #444 !important;
+        }
+
+        /* XENFORO-STYLE ACCOUNT DROPDOWN MENU */
+        #accountDropdownMenu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 300px;
+            background: #1c1c1c;
+            color: #ffffff;
+            border: 1px solid #333333;
+            border-radius: 6px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            z-index: 1000;
+            padding: 15px;
+            box-sizing: border-box;
+            font-size: 13px;
+        }
+
+        #accountDropdownMenu.show {
+            display: block;
+        }
+
+        .acc-drop-header {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+
+        .acc-drop-avatar-wrap {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+        }
+
+        .acc-drop-avatar-wrap img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .acc-drop-avatar-wrap .edit-overlay-text {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.7);
+            font-size: 9px;
+            text-align: center;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            padding: 1px 0;
+        }
+
+        .acc-drop-info .acc-drop-name {
+            font-size: 15px;
+            font-weight: bold;
+            color: #ffaa00;
+            cursor: pointer;
+        }
+
+        .acc-drop-info .acc-drop-stats {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 3px;
+        }
+
+        .acc-drop-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 12px;
+        }
+
+        .acc-drop-grid a {
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .acc-drop-grid a:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+        .acc-drop-logout {
+            margin-top: 12px;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+        }
+
+        .acc-drop-logout a {
+            color: #ff4757;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-login {
+            background-color: #009432;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .category-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0 25px 0;
+        }
+
+        .cat-badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s;
+        }
+
+        .cat-badge:hover {
+            opacity: 0.85;
+        }
+
+        .cat-badge.disabled {
+            background-color: #fbc531 !important;
+            color: #333333 !important;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .soon-box {
+            background-color: #ffffff;
+            color: #333333;
+            padding: 2px 5px;
+            font-size: 10px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .bg-new { background-color: #2f3640; }
+        .bg-ann { background-color: #007bff; }
+        .bg-que { background-color: #009432; }
+        .bg-sug { background-color: #1289A7; }
+        .bg-bug { background-color: #009432; }
+        .bg-rok { background-color: #009432; }
+        .bg-fan { background-color: #009432; }
+        .bg-tut { background-color: #009432; }
+        .bg-cha { background-color: #009432; }
+        .bg-mis { background-color: #009432; }
+        .bg-off { background-color: #636e72; }
+        .bg-rea { background-color: #636e72; }
+
+        .post-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .post-card:hover {
+            opacity: 0.95;
+        }
+
+        .post-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tag-small {
+            background-color: #007bff;
+            color: white;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        .post-title {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .post-author {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .post-author span {
+            color: #007bff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .post-author span:hover {
+            text-decoration: underline;
+        }
+
+        .box-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            border-radius: 4px;
+        }
+
+        .back-link {
+            color: #007bff;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .profile-header-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: center;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .profile-banner-view {
+            width: 100%;
+            height: 140px;
+            background-color: #444;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .profile-top-boxes {
+            display: flex;
+            gap: 10px;
+            padding: 10px 15px 0 15px;
+            justify-content: flex-end;
+            background: transparent;
+            position: relative;
+            z-index: 5;
+        }
+
+        .top-box-item {
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background 0.2s;
+        }
+
+        .top-box-item:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .profile-avatar-container {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            margin: -45px auto 10px auto;
+        }
+
+        .profile-avatar-container img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid var(--card-bg);
+            object-fit: cover;
+            background: #222;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .profile-subtext {
+            font-size: 13px;
+            color: #888;
+            margin: 5px 0 15px 0;
+        }
+
+        .profile-action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding-bottom: 20px;
+        }
+
+        .profile-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-box .stat-num {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .stat-box .stat-label {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .profile-tabs {
+            display: flex;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .profile-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            border-right: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-color);
+        }
+
+        .profile-tab:last-child {
+            border-right: none;
+        }
+
+        .profile-tab.active-tab {
+            border-bottom: 3px solid #007bff;
+            color: #007bff;
+        }
+
+        .profile-tab-content {
+            display: none;
+        }
+
+        .profile-tab-content.active-content {
+            display: block;
+        }
+
+        .info-row {
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .info-row strong {
+            display: inline-block;
+            width: 110px;
+            color: #888;
+        }
+
+        .permission-box {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        /* CUSTOM MODAL POP-UP SELECT ROLE STYLE */
+        #roleModalOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .role-modal-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .role-modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body onclick="closeDropdownOutside(event)">
+
+    <header>
+        <div class="header-left-area" style="position: relative;">
+            <!-- IKON SEARCH DI DEPAN TEKS WEBIT -->
+            <button class="header-search-icon" id="headerSearchTrigger" onclick="toggleSearchDropdown(event)" title="Search">🔍</button>
+            
+            <div class="logo-area">
+                <span class="logo-web">Web</span><span class="logo-orbit">orbit</span>
+            </div>
+
+            <!-- KOTAK POPUP SEARCH XENFORO-STYLE -->
+            <div id="searchDropdownMenu">
+                <div class="search-drop-title">Search</div>
+                <div class="search-drop-group">
+                    <input type="text" id="searchInputKeyword" placeholder="Search...">
+                </div>
+                <label class="search-drop-checkbox">
+                    <input type="checkbox" id="searchTitlesOnlyCheck"> Search titles only
+                </label>
+                <div class="search-drop-group">
+                    <label>By:</label>
+                    <input type="text" id="searchInputMember" placeholder="Member">
+                </div>
+                <div class="search-drop-actions">
+                    <button class="btn-search-main" onclick="executeSearch()">Search</button>
+                    <button class="btn-search-adv" onclick="alert('Advanced search options')">Advanced search...</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <span id="headerRoleBadge" class="badge-role role-admin">Admin</span>
+            
+            <!-- TOMBOL PROFIL HEADER YANG DIKLIK UNTUK MUNCULKAN KOTAK AKUN -->
+            <div class="user-profile-badge" id="headerProfileTrigger" onclick="toggleAccountDropdown(event)">
+                <img id="headerAvatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>" alt="Avatar">
+                <span id="headerUsername">Guest</span>
+            </div>
+
+            <!-- KOTAK POPUP MENU AKUN -->
+            <div id="accountDropdownMenu">
+                <div class="acc-drop-header">
+                    <div class="acc-drop-avatar-wrap" onclick="openProfilePage(); toggleAccountDropdown(event);">
+                        <img id="dropMenuAvatar" src="" alt="Avatar">
+                        <div class="edit-overlay-text">Edit</div>
+                    </div>
+                    <div class="acc-drop-info">
+                        <div class="acc-drop-name" id="dropMenuUsername" onclick="openProfilePage(); toggleAccountDropdown(event);">Croissant</div>
+                        <div class="acc-drop-stats">
+                            Messages: <span id="dropMsgCount">1</span><br>
+                            Reaction score: <span>0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="acc-drop-grid">
+                    <a onclick="alert('Menu: Your content'); toggleAccountDropdown(event);">Your content</a>
+                    <a onclick="alert('Menu: Reactions received'); toggleAccountDropdown(event);">Reactions received</a>
+                    <a onclick="switchPage('editAccountPage'); toggleAccountDropdown(event);">Account details</a>
+                    <a onclick="alert('Menu: Signature'); toggleAccountDropdown(event);">Signature</a>
+                    <a onclick="alert('Menu: Password and security'); toggleAccountDropdown(event);">Password and security</a>
+                    <a onclick="alert('Menu: Following'); toggleAccountDropdown(event);">Following</a>
+                    <a onclick="alert('Menu: Privacy'); toggleAccountDropdown(event);">Privacy</a>
+                    <a onclick="alert('Menu: Ignoring'); toggleAccountDropdown(event);">Ignoring</a>
+                    <a onclick="switchPage('settingsPage'); toggleAccountDropdown(event);">Preferences</a>
+                </div>
+                <div class="acc-drop-logout">
+                    <a onclick="handleLogout(); toggleAccountDropdown(event);">Log out</a>
+                </div>
+            </div>
+
+            <a onclick="alert('Menu Game')">Game</a>
+            <a onclick="switchPage('forumsPage')">Forums</a>
+            <a onclick="alert('Membuka Discord')">Discord</a>
+            <span class="settings-icon" onclick="switchPage('settingsPage')">⚙️</span>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- HALAMAN FORUMS -->
+        <div id="forumsPage" class="page active">
+            <h2>Forums</h2>
+            
+            <div id="authButtonsContainer" class="auth-buttons">
+                <button class="btn btn-login" onclick="switchPage('loginPage')">Login</button>
+                <button class="btn" onclick="switchPage('signupPage')">Signup</button>
+            </div>
+
+            <button class="btn" id="createPostBtn" onclick="openCreatePost('New Post')">Post a Thread</button>
+            
+            <div class="category-list">
+                <button class="cat-badge bg-new" onclick="openCreatePost('New Post')">New Post</button>
+                <button class="cat-badge bg-ann" onclick="openCreatePost('Announcements')">Announcements</button>
+                <button class="cat-badge disabled" disabled>Modding <span class="soon-box">Soon</span></button>
+                <button class="cat-badge bg-que" onclick="openCreatePost('Questions')">Questions</button>
+                <button class="cat-badge bg-sug" onclick="openCreatePost('Suggestions')">Suggestions</button>
+                <button class="cat-badge bg-bug" onclick="openCreatePost('Bug Reports')">Bug Reports</button>
+                <button class="cat-badge bg-rok" onclick="openCreatePost('Weborbit Rockets')">Weborbit Rockets</button>
+                <button class="cat-badge bg-fan" onclick="openCreatePost('Fanart')">Fanart</button>
+                <button class="cat-badge bg-tut" onclick="openCreatePost('Tutorials & Guides')">Tutorials & Guides</button>
+                <button class="cat-badge bg-cha" onclick="openCreatePost('Challenges')">Challenges</button>
+                <button class="cat-badge bg-mis" onclick="openCreatePost('Mission Reports')">Mission Reports</button>
+                <button class="cat-badge bg-off" onclick="openCreatePost('Off-Topic')">Off-Topic</button>
+                <button class="cat-badge bg-rea" onclick="openCreatePost('Real-life Rockets')">Real-life Rockets</button>
+            </div>
+
+            <div id="postsContainer">
+                <div class="post-card" onclick="openDetailPost('Forum Rules', 'sorabora', 'Selamat datang di forum diskusi Weborbit!')">
+                    <div class="post-left">
+                        <span class="tag-small">NEW</span>
+                        <span class="post-title">Forum Rules</span>
+                    </div>
+                    <div class="post-author">by <span onclick="event.stopPropagation(); openOtherProfile('sorabora');">sorabora</span></div>
+                </div>
+                <div class="post-card" onclick="openDetailPost('Welcome to Weborbit', 'GalaxyDrifter', 'Diskusi seputar roket dan eksplorasi luar angkasa.')">
+                    <div class="post-left">
+                        <span class="tag-small">ROCKETS</span>
+                        <span class="post-title">Welcome to Weborbit</span>
+                    </div>
+                    <div class="post-author">by <span onclick="event.stopPropagation(); openOtherProfile('GalaxyDrifter');">GalaxyDrifter</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HALAMAN HASIL SEARCH -->
+        <div id="searchResultPage" class="page">
+            <a class="back-link" onclick="switchPage('forumsPage')">&lsaquo; Back to Forums</a>
+            <h2 id="searchResultTitle">Search results</h2>
+            <div id="searchResultContainer"></div>
+        </div>
+
+        <!-- HALAMAN LOGIN -->
+        <div id="loginPage" class="page">
+            <a class="back-link" onclick="switchPage('forumsPage')">&lsaquo; Back to Forums</a>
+            <h2>Login to Weborbit</h2>
+            <div class="box-container">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUser" placeholder="Enter your registered username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPass" placeholder="Enter your password">
+                </div>
+                <button class="btn btn-login" onclick="handleLogin()">Login</button>
+            </div>
+        </div>
+
+        <!-- HALAMAN SIGNUP -->
+        <div id="signupPage" class="page">
+            <a class="back-link" onclick="switchPage('forumsPage')">&lsaquo; Back to Forums</a>
+            <h2>Create an Account</h2>
+            <div class="box-container">
+                <div class="form-group">
+                    <label>Choose Username</label>
+                    <input type="text" id="signupUser" placeholder="Choose a username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signupPass" placeholder="Choose a password">
+                </div>
+                <button class="btn" onclick="handleSignup()">Sign Up</button>
+            </div>
+        </div>
+
+        <!-- HALAMAN DETAIL POST -->
+        <div id="detailPostPage" class="page">
+            <a class="back-link" onclick="switchPage('forumsPage')">&lsaquo; Back to Forums</a>
+            <h2 id="detailTitle">Title</h2>
+            <div class="post-author" id="detailAuthor" style="margin-bottom: 15px;">by Author</div>
+            <div class="box-container">
+                <p id="detailDesc">Description text here...</p>
+            </div>
+        </div>
+
+        <!-- HALAMAN BUAT POST -->
+        <div id="createPostPage" class="page">
+            <a class="back-link" onclick="switchPage('forumsPage')">&lsaquo; Back to Forums</a>
+            <h2>Create Thread</h2>
+            <div class="box-container">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="postTitle" placeholder="Fill in the post title name">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="postDesc" rows="4" placeholder="Fill in the description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="postCat">
+                        <option>New Post</option>
+                        <option>Announcements</option>
+                        <option>Questions</option>
+                        <option>Suggestions</option>
+                        <option>Bug Reports</option>
+                        <option>Weborbit Rockets</option>
+                        <option>Fanart</option>
+                        <option>Tutorials & Guides</option>
+                        <option>Challenges</option>
+                        <option>Mission Reports</option>
+                        <option>Off-Topic</option>
+                        <option>Real-life Rockets</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="addNewPost()">Publish Thread</button>
+            </div>
+        </div>
+
+        <!-- HALAMAN TAMPILAN PROFILE -->
+        <div id="profilePage" class="page">
+            <a class="back-link" onclick="switchPage('forumsPage')">&lsaquo; Back to Forums</a>
+            
+            <div class="profile-header-card">
+                <div id="viewProfileBanner" class="profile-banner-view" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800');">
+                    <div class="profile-top-boxes">
+                        <div class="top-box-item" onclick="openGiveRoleModal()">Give a Role</div>
+                        <div class="top-box-item" onclick="alert('Kotak Aksi 2: Statistik Pengguna')">Stats Info</div>
+                        <div class="top-box-item" onclick="alert('Kotak Aksi 3: Pengaturan Cepat')">Quick Menu</div>
+                    </div>
+                </div>
+                
+                <div class="profile-avatar-container">
+                    <img id="viewProfileAvatar" src="" alt="Avatar">
+                </div>
+                <div class="profile-name" id="viewProfileName">Username</div>
+                <div style="margin-top: 5px;"><span id="viewRoleBadge" class="badge-role role-admin">Admin</span></div>
+                <div class="profile-subtext" id="viewProfileSub">27 · From Indonesian :)</div>
+                <div class="profile-action-buttons">
+                    <button class="btn" style="background: #2f3640; font-size: 12px; padding: 6px 12px;" onclick="alert('Sending direct message...')">Send direct message</button>
+                    <button class="btn" id="editProfileNavBtn" style="background: #007bff; font-size: 12px; padding: 6px 12px;" onclick="switchPage('editAccountPage')">Edit profile banner</button>
+                </div>
+            </div>
+
+            <div class="profile-stats-grid">
+                <div class="stat-box">
+                    <div class="stat-num" id="userMsgCount">1</div>
+                    <div class="stat-label">Messages</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num">0</div>
+                    <div class="stat-label">Reaction score</div>
+                </div>
+            </div>
+
+            <div class="profile-tabs">
+                <button class="profile-tab active-tab" onclick="switchProfileTab('postsTab', this)">Postings</button>
+                <button class="profile-tab" onclick="switchProfileTab('aboutTab', this)">About</button>
+            </div>
+
+            <div id="postsTab" class="profile-tab-content active-content">
+                <div class="box-container" style="text-align: center; color: #888; padding: 30px;">
+                    <p id="userStatusDisplay">No status updates yet.</p>
+                </div>
+            </div>
+
+            <div id="aboutTab" class="profile-tab-content">
+                <div class="box-container">
+                    <div class="info-row" style="margin-bottom: 20px; font-style: italic;" id="aboutBioText">I am a creator on Weborbit.</div>
+                    <div class="info-row"><strong>Birthday:</strong> <span id="aboutBday">Jan 1, 1999 (Age: 27)</span></div>
+                    <div class="info-row"><strong>Location:</strong> <span id="aboutLoc">Indonesian :)</span></div>
+                    <div class="info-row"><strong>Gender:</strong> <span id="aboutGender">Male</span></div>
+                    <div class="info-row"><strong>Occupation:</strong> <span id="aboutOcc">A Creator</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HALAMAN EDIT ACCOUNT -->
+        <div id="editAccountPage" class="page">
+            <a class="back-link" onclick="switchPage('profilePage')">&lsaquo; Back to Profile</a>
+            <h2>Account details</h2>
+            <div class="box-container">
+                <div class="form-group">
+                    <label>Username:</label>
+                    <input type="text" id="editUsernameInput">
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="email" id="editEmailInput" value="user@email.com" style="flex: 1;">
+                        <button class="btn" style="padding: 0 15px; font-size: 13px;" onclick="alert('Email update requested!')">Change</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Avatar:</label>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img id="editAvatarPreview" src="" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                        <input type="file" accept="image/*" onchange="previewAvatar(event)">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Profile banner:</label>
+                    <div id="editBannerPreview" class="profile-banner-view" style="height: 100px; border-radius: 4px; margin-bottom: 8px; background-size: cover;"></div>
+                    <input type="file" accept="image/*" onchange="previewBanner(event)">
+                </div>
+                <div class="form-group">
+                    <label>Date of birth:</label>
+                    <input type="text" id="editBdayInput" value="Jan 1, 1999">
+                </div>
+                <div class="form-group">
+                    <label>Location:</label>
+                    <input type="text" id="editLocInput" value="Indonesian :)">
+                </div>
+                <div class="form-group">
+                    <label>Gender:</label>
+                    <select id="editGenderInput">
+                        <option>No selection</option>
+                        <option selected>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Occupation:</label>
+                    <input type="text" id="editOccInput" value="A Creator">
+                </div>
+                <div class="form-group">
+                    <label>About you:</label>
+                    <textarea id="editBioInput" rows="4">I am a creator on Weborbit.</textarea>
+                </div>
+                <button class="btn" style="width: 100%; margin-top: 10px;" onclick="saveAccountSettings()">Save</button>
+            </div>
+        </div>
+
+        <!-- PENGATURAN KHUSUS ROLE & PERMISSION -->
+        <div id="roleSettingsPage" class="page">
+            <a class="back-link" onclick="switchPage('forumsPage')">&lsaquo; Back to Forums</a>
+            <h2>Pengaturan Khusus Role & Permission</h2>
+            <div class="box-container">
+                <p style="font-size: 13px; color: #888; margin-top: 0;">Pilih role untuk akunmu sendiri atau atur role dengan 5 pilihan eksklusif:</p>
+                
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Pilih Target Role:</label>
+                    <select id="targetRoleSelect" onchange="updatePermissionPreview()">
+                        <option value="Admin">Admin</option>
+                        <option value="Moderator">Moderator</option>
+                        <option value="Forum Legend">Forum Legend</option>
+                        <option value="Staff Member">Staff Member</option>
+                        <option value="Discord Staff">Discord Staff</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Permission yang Didapatkan:</label>
+                    <div id="permissionPreviewBox" class="permission-box"></div>
+                </div>
+
+                <button class="btn" style="width: 100%; background-color: #009432; margin-top: 10px;" onclick="applySpecialRole()">Terapkan Role Ini ke Akun Saya</button>
+            </div>
+        </div>
+
+        <!-- HALAMAN SETTINGS -->
+        <div id="settingsPage" class="page">
+            <a class="back-link" onclick="switchPage('forumsPage')">&lsaquo; Back to Forums</a>
+            <h2>Settings</h2>
+            <div class="box-container">
+                <h3>Appearance</h3>
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 15px;">
+                    <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()"> Dark Mode Theme
+                </label>
+            </div>
+            <div class="box-container" style="margin-top: 15px;">
+                <h3>Pengaturan Khusus Role</h3>
+                <button class="btn" style="background-color: #1289A7; width: 100%;" onclick="switchPage('roleSettingsPage')">Buka Pengaturan Role & Permission</button>
+            </div>
+            <div class="box-container" style="margin-top: 15px;">
+                <h3>Account Session</h3>
+                <button class="btn" style="background-color: #ff4757;" onclick="handleLogout()">Log Out / Switch Account</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CUSTOM SELECT ROLE MODAL -->
+    <div id="roleModalOverlay">
+        <div class="role-modal-box">
+            <h3 style="margin-top: 0;">Give a Role</h3>
+            <p id="modalTargetUserText" style="font-size: 13px; color: #888;"></p>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label>Pilih Role Baru:</label>
+                <select id="modalRoleSelect">
+                    <option value="Admin">Admin</option>
+                    <option value="Moderator">Moderator</option>
+                    <option value="Forum Legend">Forum Legend</option>
+                    <option value="Staff Member">Staff Member</option>
+                    <option value="Discord Staff">Discord Staff</option>
+                </select>
+            </div>
+            <div class="role-modal-buttons">
+                <button class="btn" style="background: #636e72; flex: 1;" onclick="closeGiveRoleModal()">Batal</button>
+                <button class="btn" style="background: #009432; flex: 1;" onclick="confirmGiveRole()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+            if(pageId === 'roleSettingsPage') {
+                updatePermissionPreview();
+            }
+        }
+
+        function switchProfileTab(tabId, btnElement) {
+            document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active-content'));
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active-tab'));
+            document.getElementById(tabId).classList.add('active-content');
+            btnElement.classList.add('active-tab');
+        }
+
+        const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
+
+        function getRegisteredUsers() {
+            const users = localStorage.getItem('registeredUsers');
+            return users ? JSON.parse(users) : [];
+        }
+
+        function saveRegisteredUsers(users) {
+            localStorage.setItem('registeredUsers', JSON.stringify(users));
+        }
+
+        // FUNGSI TOGGLE SEARCH DROPDOWN
+        function toggleSearchDropdown(event) {
+            event.stopPropagation();
+            const searchMenu = document.getElementById('searchDropdownMenu');
+            const accountMenu = document.getElementById('accountDropdownMenu');
+            accountMenu.classList.remove('show'); // Tutup menu akun jika terbuka
+            searchMenu.classList.toggle('show');
+        }
+
+        // FUNGSI EKsekusi PENCARIAN (SEARCH)
+        function executeSearch() {
+            const keyword = document.getElementById('searchInputKeyword').value.toLowerCase().trim();
+            const member = document.getElementById('searchInputMember').value.toLowerCase().trim();
+            const titlesOnly = document.getElementById('searchTitlesOnlyCheck').checked;
+
+            document.getElementById('searchDropdownMenu').classList.remove('show');
+
+            const allPostCards = document.querySelectorAll('#postsContainer .post-card');
+            let resultsHTML = '';
+            let matchCount = 0;
+
+            allPostCards.forEach(card => {
+                const titleText = card.querySelector('.post-title').innerText.toLowerCase();
+                const authorText = card.querySelector('.post-author span').innerText.toLowerCase();
+                
+                let matchesKeyword = !keyword || titleText.includes(keyword);
+                if (!titlesOnly && keyword && !matchesKeyword) {
+                    // Cek jika keyword cocok di seluruh post card HTML
+                    matchesKeyword = card.innerText.toLowerCase().includes(keyword);
+                }
+
+                let matchesMember = !member || authorText.includes(member);
+
+                if (matchesKeyword && matchesMember) {
+                    matchCount++;
+                    resultsHTML += card.outerHTML;
+                }
+            });
+
+            document.getElementById('searchResultTitle').innerText = `Search results for query: "${keyword || member || 'All'}"`;
+            const resContainer = document.getElementById('searchResultContainer');
+            
+            if (matchCount > 0) {
+                resContainer.innerHTML = resultsHTML;
+            } else {
+                resContainer.innerHTML = `<div class="box-container" style="text-align: center; color: #888; padding: 30px;"><p>No results found matching your query.</p></div>`;
+            }
+
+            switchPage('searchResultPage');
+        }
+
+        // FUNGSI TOGGLE DROPDOWN MENU KOTAK AKUN DI HEADER
+        function toggleAccountDropdown(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('accountDropdownMenu');
+            const searchMenu = document.getElementById('searchDropdownMenu');
+            searchMenu.classList.remove('show'); // Tutup menu search jika terbuka
+            menu.classList.toggle('show');
+            if(menu.classList.contains('show')) {
+                updateDropdownInfo();
+            }
+        }
+
+        function closeDropdownOutside(event) {
+            const menu = document.getElementById('accountDropdownMenu');
+            const trigger = document.getElementById('headerProfileTrigger');
+            const searchMenu = document.getElementById('searchDropdownMenu');
+            const searchTrigger = document.getElementById('headerSearchTrigger');
+
+            if(menu.classList.contains('show') && !menu.contains(event.target) && !trigger.contains(event.target)) {
+                menu.classList.remove('show');
+            }
+            if(searchMenu.classList.contains('show') && !searchMenu.contains(event.target) && !searchTrigger.contains(event.target)) {
+                searchMenu.classList.remove('show');
+            }
+        }
+
+        function updateDropdownInfo() {
+            const username = localStorage.getItem('userName') || "Guest";
+            document.getElementById('dropMenuUsername').innerText = username;
+            const avatar = localStorage.getItem('userAvatar_' + username) || defaultAvatar;
+            document.getElementById('dropMenuAvatar').src = avatar;
+        }
+
+        function openProfilePage() {
+            const username = localStorage.getItem('userName') || "Guest";
+            loadProfileForUser(username, true);
+        }
+
+        function openOtherProfile(username) {
+            loadProfileForUser(username, false);
+        }
+
+        function loadProfileForUser(username, isOwnProfile) {
+            document.getElementById('viewProfileName').innerText = username;
+            document.getElementById('viewProfileSub').innerText = "27 · From Indonesian :)";
+            
+            const avatar = localStorage.getItem('userAvatar_' + username) || defaultAvatar;
+            document.getElementById('viewProfileAvatar').src = avatar;
+
+            const banner = localStorage.getItem('userBanner_' + username) || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800';
+            document.getElementById('viewProfileBanner').style.backgroundImage = `url('${banner}')`;
+
+            const role = localStorage.getItem('userRole_' + username) || 'Admin';
+            const badgeClass = getRoleClass(role);
+            const viewBadge = document.getElementById('viewRoleBadge');
+            viewBadge.className = "badge-role " + badgeClass;
+            viewBadge.innerText = role;
+
+            const bday = localStorage.getItem('userBday_' + username) || 'Jan 1, 1999';
+            const loc = localStorage.getItem('userLoc_' + username) || 'Indonesian :)';
+            const gender = localStorage.getItem('userGender_' + username) || 'Male';
+            const occ = localStorage.getItem('userOcc_' + username) || 'A Creator';
+            const bio = localStorage.getItem('userBio_' + username) || 'I am a creator on Weborbit.';
+
+            document.getElementById('aboutBday').innerText = bday;
+            document.getElementById('aboutLoc').innerText = loc;
+            document.getElementById('aboutGender').innerText = gender;
+            document.getElementById('aboutOcc').innerText = occ;
+            document.getElementById('aboutBioText').innerText = bio;
+            document.getElementById('viewProfileSub').innerText = `27 · From ${loc}`;
+
+            const editBtn = document.getElementById('editProfileNavBtn');
+            const loggedInUser = localStorage.getItem('userName');
+            if (isOwnProfile && loggedInUser && loggedInUser === username) {
+                editBtn.style.display = 'inline-block';
+                document.getElementById('editUsernameInput').value = username;
+                document.getElementById('editAvatarPreview').src = avatar;
+                document.getElementById('editBannerPreview').style.backgroundImage = `url('${banner}')`;
+                document.getElementById('editBdayInput').value = bday;
+                document.getElementById('editLocInput').value = loc;
+                document.getElementById('editGenderInput').value = gender;
+                document.getElementById('editOccInput').value = occ;
+                document.getElementById('editBioInput').value = bio;
+            } else {
+                editBtn.style.display = 'none';
+            }
+
+            switchPage('profilePage');
+        }
+
+        function getRoleClass(role) {
+            switch(role) {
+                case 'Admin': return 'role-admin';
+                case 'Moderator': return 'role-moderator';
+                case 'Forum Legend': return 'role-forum-legend';
+                case 'Staff Member': return 'role-staff-member';
+                case 'Discord Staff': return 'role-discord-staff';
+                default: return 'role-admin';
+            }
+        }
+
+        const rolePermissionsData = {
+            "Admin": "• Full Control Semua Sistem Forum<br>• Mengelola User & Mengubah Role Siapa Saja<br>• Menghapus/Edit Semua Postingan & Thread<br>• Membuat Pengumuman Resmi (Announcements)",
+            "Moderator": "• Menghapus atau Mengedit Postingan Member<br>• Membekukan / Lock Thread Diskusi<br>• Memberikan Peringatan (Warn) ke Pengguna<br>• Mengatur Kategori Diskusi Masuk",
+            "Forum Legend": "• Akses Membuat Thread Prioritas Tinggi<br>• Badge Khusus Legend yang Menarik<br>• Mengikuti Challenge Eksklusif Forum<br>• Membuat Custom Thread Bebas",
+            "Staff Member": "• Mengelola Support & Tiket Bantuan Member<br>• Membantu Anggota Baru di Forum<br>• Akses Moderasi Terbatas di Staff Room",
+            "Discord Staff": "• Sinkronisasi Cross-Platform Antar Forum & Discord<br>• Mengelola Link Komunitas & Channel<br>• Mengatur Perizinan Discord Bot"
+        };
+
+        function updatePermissionPreview() {
+            const selected = document.getElementById('targetRoleSelect').value;
+            document.getElementById('permissionPreviewBox').innerHTML = rolePermissionsData[selected] || "Tidak ada data.";
+        }
+
+        function openGiveRoleModal() {
+            const currentProfileUser = document.getElementById('viewProfileName').innerText;
+            document.getElementById('modalTargetUserText').innerText = "Mengatur role untuk pengguna: " + currentProfileUser;
+            
+            const currentRole = localStorage.getItem('userRole_' + currentProfileUser) || 'Admin';
+            document.getElementById('modalRoleSelect').value = currentRole;
+
+            document.getElementById('roleModalOverlay').style.display = 'flex';
+        }
+
+        function closeGiveRoleModal() {
+            document.getElementById('roleModalOverlay').style.display = 'none';
+        }
+
+        function confirmGiveRole() {
+            const currentProfileUser = document.getElementById('viewProfileName').innerText;
+            const selectedRole = document.getElementById('modalRoleSelect').value;
+
+            localStorage.setItem('userRole_' + currentProfileUser, selectedRole);
+
+            const loggedInUser = localStorage.getItem('userName');
+            if (currentProfileUser === loggedInUser) {
+                updateHeaderAndProfileRole(selectedRole);
+            } else {
+                document.getElementById('viewRoleBadge').className = "badge-role " + getRoleClass(selectedRole);
+                document.getElementById('viewRoleBadge').innerText = selectedRole;
+            }
+
+            closeGiveRoleModal();
+            alert("Berhasil! Role untuk akun " + currentProfileUser + " telah diubah menjadi: " + selectedRole);
+        }
+
+        function applySpecialRole() {
+            const selectedRole = document.getElementById('targetRoleSelect').value;
+            const username = localStorage.getItem('userName');
+            
+            if (!username) {
+                alert("Silakan Login terlebih dahulu sebelum mengubah role akun Anda!");
+                switchPage('loginPage');
+                return;
+            }
+            
+            localStorage.setItem('userRole_' + username, selectedRole);
+            updateHeaderAndProfileRole(selectedRole);
+
+            alert("Berhasil! Role Anda telah diubah menjadi: " + selectedRole + " beserta permission-nya.");
+            switchPage('forumsPage');
+        }
+
+        function updateHeaderAndProfileRole(role) {
+            const badgeClass = getRoleClass(role);
+            
+            const headerBadge = document.getElementById('headerRoleBadge');
+            headerBadge.className = "badge-role " + badgeClass;
+            headerBadge.innerText = role;
+
+            const viewBadge = document.getElementById('viewRoleBadge');
+            const currentProfileUser = document.getElementById('viewProfileName').innerText;
+            const loggedInUser = localStorage.getItem('userName');
+            
+            if(viewBadge && currentProfileUser === loggedInUser) {
+                viewBadge.className = "badge-role " + badgeClass;
+                viewBadge.innerText = role;
+            }
+        }
+
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Img = e.target.result;
+                    document.getElementById('editAvatarPreview').src = base64Img;
+                    const username = localStorage.getItem('userName') || "Guest";
+                    localStorage.setItem('userAvatar_' + username, base64Img);
+                    document.getElementById('headerAvatar').src = base64Img;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewBanner(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Img = e.target.result;
+                    document.getElementById('editBannerPreview').style.backgroundImage = `url('${base64Img}')`;
+                    const username = localStorage.getItem('userName') || "Guest";
+                    localStorage.setItem('userBanner_' + username, base64Img);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveAccountSettings() {
+            const username = localStorage.getItem('userName') || "Guest";
+            const newName = document.getElementById('editUsernameInput').value.trim();
+            const bday = document.getElementById('editBdayInput').value;
+            const loc = document.getElementById('editLocInput').value;
+            const gender = document.getElementById('editGenderInput').value;
+            const occ = document.getElementById('editOccInput').value;
+            const bio = document.getElementById('editBioInput').value;
+
+            if(!newName) {
+                alert("Username tidak boleh kosong!");
+                return;
+            }
+
+            localStorage.setItem('userName', newName);
+            localStorage.setItem('userBday_' + newName, bday);
+            localStorage.setItem('userLoc_' + newName, loc);
+            localStorage.setItem('userGender_' + newName, gender);
+            localStorage.setItem('userOcc_' + newName, occ);
+            localStorage.setItem('userBio_' + newName, bio);
+
+            document.getElementById('headerUsername').innerText = newName;
+            alert("Account details successfully saved!");
+            loadProfileForUser(newName, true);
+        }
+
+        function handleSignup() {
+            const user = document.getElementById('signupUser').value.trim();
+            const pass = document.getElementById('signupPass').value;
+
+            if (!user || !pass) {
+                alert("Username dan password harus diisi!");
+                return;
+            }
+
+            let users = getRegisteredUsers();
+            if (users.some(u => u.username === user)) {
+                alert("Username sudah terdaftar!");
+                return;
+            }
+
+            users.push({ username: user, password: pass });
+            saveRegisteredUsers(users);
+
+            localStorage.setItem('userName', user);
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userRole_' + user, 'Admin');
+
+            document.getElementById('headerUsername').innerText = user;
+            document.getElementById('authButtonsContainer').style.display = 'none';
+
+            alert("Account created successfully!");
+            switchPage('forumsPage');
+        }
+
+        function handleLogin() {
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value;
+
+            let users = getRegisteredUsers();
+            const foundUser = users.find(u => u.username === user && u.password === pass);
+
+            if (foundUser || (user === "admin" && pass === "admin")) {
+                const activeName = foundUser ? foundUser.username : user;
+                localStorage.setItem('userName', activeName);
+                localStorage.setItem('isLoggedIn', 'true');
+                
+                if(!localStorage.getItem('userRole_' + activeName)) {
+                    localStorage.setItem('userRole_' + activeName, 'Admin');
+                }
+
+                document.getElementById('headerUsername').innerText = activeName;
+                document.getElementById('authButtonsContainer').style.display = 'none';
+
+                const avatar = localStorage.getItem('userAvatar_' + activeName) || defaultAvatar;
+                document.getElementById('headerAvatar').src = avatar;
+
+                alert("Login successful!");
+                switchPage('forumsPage');
+            } else {
+                alert("Username atau Password salah!");
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('userName');
+            localStorage.removeItem('isLoggedIn');
+            document.getElementById('headerUsername').innerText = "Guest";
+            document.getElementById('headerAvatar').src = defaultAvatar;
+            document.getElementById('authButtonsContainer').style.display = 'flex';
+            updateHeaderAndProfileRole('Admin');
+            alert("Logged out!");
+            switchPage('loginPage');
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.getElementById('darkModeToggle').checked;
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        window.onload = function() {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeToggle').checked = true;
+            }
+
+            const savedName = localStorage.getItem('userName');
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+            if (isLoggedIn && savedName) {
+                document.getElementById('headerUsername').innerText = savedName;
+                document.getElementById('authButtonsContainer').style.display = 'none';
+                const avatar = localStorage.getItem('userAvatar_' + savedName) || defaultAvatar;
+                document.getElementById('headerAvatar').src = avatar;
+                const role = localStorage.getItem('userRole_' + savedName) || 'Admin';
+                updateHeaderAndProfileRole(role);
+            } else {
+                document.getElementById('headerUsername').innerText = "Guest";
+                document.getElementById('headerAvatar').src = defaultAvatar;
+                document.getElementById('authButtonsContainer').style.display = 'flex';
+                updateHeaderAndProfileRole('Admin');
+            }
+        }
+
+        function openDetailPost(title, author, desc) {
+            document.getElementById('detailTitle').innerText = title;
+            document.getElementById('detailAuthor').innerHTML = `by <span onclick="openOtherProfile('${author}')">${author}</span>`;
+            document.getElementById('detailDesc').innerText = desc;
+            switchPage('detailPostPage');
+        }
+
+        function openCreatePost(categoryName) {
+            switchPage('createPostPage');
+            const selectCat = document.getElementById('postCat');
+            for (let i = 0; i < selectCat.options.length; i++) {
+                if (selectCat.options[i].text === categoryName) {
+                    selectCat.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        function addNewPost() {
+            const title = document.getElementById('postTitle').value;
+            const desc = document.getElementById('postDesc').value;
+            const cat = document.getElementById('postCat').value;
+            const username = localStorage.getItem('userName') || "Guest";
+
+            if (!title) {
+                alert("Judul postingan tidak boleh kosong!");
+                return;
+            }
+
+            const container = document.getElementById('postsContainer');
+            const newPostHTML = `
+                <div class="post-card" onclick="openDetailPost('${title}', '${username}', '${desc}')">
+                    <div class="post-left">
+                        <span class="tag-small">${cat.toUpperCase()}</span>
+                        <span class="post-title">${title}</span>
+                    </div>
+                    <div class="post-author">by <span onclick="event.stopPropagation(); openOtherProfile('${username}');">${username}</span></div>
+                </div>
+            `;
+            container.insertAdjacentHTML('afterbegin', newPostHTML);
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postDesc').value = '';
+            switchPage('forumsPage');
+        }
+    </script>
+</body>
+</html>
